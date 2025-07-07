@@ -1,0 +1,62 @@
+server:
+  port: 8001
+
+spring:
+    application:
+        name: API-GATEWAY
+    cloud:
+        gateway:
+            discovery:
+                locator:
+                    enabled: true
+                    lower-case-service-id: true
+            server:
+              webmvc:
+                routes:
+                  - id: ms-publicaciones-autor
+                    uri: lb://SERVICIO-PUBLICACIONES
+                    predicates:
+                        - Path=/api/v1/autor/**
+                    filters:
+                        - StripPrefix=2
+                  - id: ms-publicaciones-libro
+                    uri: lb://SERVICIO-PUBLICACIONES
+                    predicates:
+                        - Path=/api/v1/libro/**
+                    filters:
+                        - StripPrefix=2
+                  - id: ms-publicaciones-articulo
+                    uri: lb://SERVICIO-PUBLICACIONES
+                    predicates:
+                        - Path=/api/v1/articulo/**
+                    filters:
+                        - StripPrefix=2
+                  - id: ms-ctalogo
+                    uri: lb://SERVICIO-CATALOGO
+                    predicates:
+                        - Path=/api/v1/catalogo/**
+                    filters:
+                        - StripPrefix=2
+                  - id: ms-notificaciones
+                    uri: lb://SERVICIO-NOTIFICACIONES
+                    predicates:
+                        - Path=/api/v1/notificaciones/**
+                    filters:
+                        - StripPrefix=2
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka/
+        fetchRegistry: true
+        register-with-eureka: true
+    instance:
+        prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

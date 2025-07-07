@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: SERVICIO-PUBLICACIONES
+
+  datasource:
+    #url: jdbc:postgresql://localhost:5432/publicaciones_db
+    #username: admin
+    #password: admin12345
+    url: jdbc:postgresql://localhost:26257/publicaciones_db?user=root&password=
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    queues:
+      notificaciones: notificaciones.cola
+      catalogo: catalogo.cola
+server:
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    fetchRegistry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
