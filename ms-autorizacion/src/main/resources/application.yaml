@@ -2,9 +2,13 @@ spring:
   application:
     name: SERVICIO-AUTORIZACION
   datasource:
-    url: jdbc:postgresql://localhost:26259/catalogo_db?user=root&password=
-    username: root
-    password:
+    url: jdbc:postgresql://localhost:5432/autorizacion_db
+    username: admin
+    password: admin12345
+   #url: jdbc:postgresql://localhost:26259/autorizacion_db?user=root&password=
+    #username: root
+    #password:
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
