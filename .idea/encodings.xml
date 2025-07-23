@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/ms-api-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-autorizacion/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-catalogo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-eureca-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-publicaciones/src/main/java" charset="UTF-8" />

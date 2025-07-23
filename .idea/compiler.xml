@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ms-api-gateway" />
+        <module name="ms-autorizacion" />
         <module name="ms-eureca-server" />
       </profile>
       <profile name="Annotation profile for microservicios" enabled="true">
@@ -15,7 +16,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="ms.notificaciones" />
         <module name="sincronizacion" />
@@ -27,6 +28,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ms-api-gateway" options="-parameters" />
+      <module name="ms-autorizacion" options="-parameters" />
       <module name="ms-catalogo" options="-parameters" />
       <module name="ms-eureca-server" options="-parameters" />
       <module name="ms-publicaciones" options="-parameters" />

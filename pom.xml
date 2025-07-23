@@ -15,7 +15,7 @@
         <module>sincronizacion</module>
         <module>ms-eureca-server</module>
         <module>ms-api-gateway</module>
-
+        <module>ms-autorizacion</module>
     </modules>
 
 </project>
