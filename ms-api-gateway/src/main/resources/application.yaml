@@ -43,6 +43,18 @@ spring:
                         - Path=/api/v1/notificaciones/**
                     filters:
                         - StripPrefix=2
+                  - id: ms-autorization-auth
+                    uri: lb://SERVICIO-AUTORIZACION
+                    predicates:
+                        - Path=/api/v1/auth/**
+                    filters:
+                        - StripPrefix=2
+                  - id: ms-autorization-roles
+                    uri: lb://SERVICIO-AUTORIZACION
+                    predicates:
+                        - Path=/api/v1/roles/**
+                    filters:
+                        - StripPrefix=2
 eureka:
     client:
         serviceUrl:
