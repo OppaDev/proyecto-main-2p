@@ -1,6 +1,7 @@
 package publicaciones.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -20,5 +21,6 @@ public class Articulo extends Publicacion {
 
     @ManyToOne
     @JoinColumn(name = "id_autor", nullable = false)
+    @JsonBackReference
     private Autor autor;
 }

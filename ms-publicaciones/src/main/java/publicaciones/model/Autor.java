@@ -1,6 +1,7 @@
 package publicaciones.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +30,11 @@ public class Autor {
     private String institucion;
 
     @OneToMany(mappedBy = "autor")
+    @JsonManagedReference
     private List<Libro> libros;
+
     @OneToMany(mappedBy = "autor")
+    @JsonManagedReference
     private List<Articulo> articulos;
 
 }

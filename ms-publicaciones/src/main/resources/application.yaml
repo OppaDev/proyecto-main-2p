@@ -3,12 +3,12 @@ spring:
     name: SERVICIO-PUBLICACIONES
 
   datasource:
-    #url: jdbc:postgresql://localhost:5432/publicaciones_db
-    #username: admin
-    #password: admin12345
-    url: jdbc:postgresql://localhost:26257/publicaciones_db?user=root&password=
-    username: root
-    password:
+    url: jdbc:postgresql://localhost:5432/publicaciones_db
+    username: admin
+    password: admin12345
+    #url: jdbc:postgresql://localhost:26259/publicaciones_db?user=root&password=
+    #username: root
+    #password:
   jpa:
     hibernate:
       ddl-auto: update
