@@ -1,9 +1,8 @@
-package ec.edu.espe.ms_autorizacion.util;
+package publicaciones.util;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,36 +10,19 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret:YmZha2Vfc2VjcmV0X2tleQ==}")
+    @Value("${jwt.secret:a-string-secret-at-least-256-bits-long}")
     private String jwtSecret;
 
     @Value("${jwt.expirationMs:3600000}")
     private int jwtExpirationMs;
 
     private Key getSigningKey() {
-        // byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);;
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String generateJwtToken(org.springframework.security.core.Authentication authentication) {
-        var user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        String roles = user.getAuthorities()
-                .stream()
-                .map(a -> a.getAuthority())
-                .collect(Collectors.joining(","));
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("roles", roles)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
     }
 
     public boolean validateJwtToken(String token) {
@@ -48,7 +30,7 @@ public class JwtUtils {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
-            // inválido
+            // Token inválido
         }
         return false;
     }
@@ -69,6 +51,7 @@ public class JwtUtils {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("roles");
+        if (roles == null) return java.util.Collections.emptyList();
         return java.util.Arrays.asList(roles.split(","));
     }
 }

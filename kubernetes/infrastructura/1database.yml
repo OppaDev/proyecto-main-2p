@@ -1,0 +1,159 @@
+# Namespace para toda la aplicación
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aplicacion-distribuida
+---
+# ConfigMap para PostgreSQL
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: aplicacion-distribuida
+data:
+  POSTGRES_DB: postgres
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: admin12345
+---
+# ConfigMap para script de inicialización
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-script
+  namespace: aplicacion-distribuida
+data:
+  init-databases.sql: |
+    -- Script de inicialización para crear las bases de datos de los microservicios
+    CREATE DATABASE autorizacion_db;
+    CREATE DATABASE publicaciones_db;
+    CREATE DATABASE catalogo_db;
+    CREATE DATABASE notifications;
+
+    -- Otorgar permisos al usuario admin en todas las bases de datos
+    GRANT ALL PRIVILEGES ON DATABASE autorizacion_db TO admin;
+    GRANT ALL PRIVILEGES ON DATABASE publicaciones_db TO admin;
+    GRANT ALL PRIVILEGES ON DATABASE catalogo_db TO admin;
+    GRANT ALL PRIVILEGES ON DATABASE notifications TO admin;
+---
+# PersistentVolume para PostgreSQL
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /data/postgres
+---
+# PersistentVolumeClaim para PostgreSQL
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: aplicacion-distribuida
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: manual
+---
+# Deployment de PostgreSQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: aplicacion-distribuida
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+        - name: postgres-init-script
+          mountPath: /docker-entrypoint-initdb.d
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+        livenessProbe:
+          exec:
+            command:
+              - pg_isready
+              - -U
+              - admin
+              - -d
+              - postgres
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+              - pg_isready
+              - -U
+              - admin
+              - -d
+              - postgres
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+      - name: postgres-init-script
+        configMap:
+          name: postgres-init-script
+---
+# Service para PostgreSQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: aplicacion-distribuida
+spec:
+  selector:
+    app: postgres
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+  type: ClusterIP

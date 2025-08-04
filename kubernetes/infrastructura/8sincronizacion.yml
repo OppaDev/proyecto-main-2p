@@ -1,0 +1,76 @@
+# Deployment para Sincronización
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sincronizacion
+  namespace: aplicacion-distribuida
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sincronizacion
+  template:
+    metadata:
+      labels:
+        app: sincronizacion
+    spec:
+      containers:
+      - name: sincronizacion
+        image: oppadev/sincronizacion:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "SERVICIO-SINCRONIZACION"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          value: "http://eureka-server:8761/eureka/"
+        - name: SPRING_RABBITMQ_HOST
+          value: "rabbitmq"
+        - name: SPRING_RABBITMQ_PORT
+          value: "5672"
+        - name: SPRING_RABBITMQ_USERNAME
+          value: "admin"
+        - name: SPRING_RABBITMQ_PASSWORD
+          value: "admin"
+        - name: RELOJ_INTERVALO
+          value: "10"
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m -Deureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/ -Dserver.port=8080"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+          requests:
+            memory: "256Mi"
+            cpu: "125m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+---
+# Service para Sincronización
+apiVersion: v1
+kind: Service
+metadata:
+  name: sincronizacion
+  namespace: aplicacion-distribuida
+spec:
+  selector:
+    app: sincronizacion
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

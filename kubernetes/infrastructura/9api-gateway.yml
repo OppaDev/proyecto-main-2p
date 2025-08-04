@@ -1,0 +1,109 @@
+# Deployment para API Gateway
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: aplicacion-distribuida
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: oppadev/ms-api-gateway:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_APPLICATION_NAME
+          value: "SERVICIO-GATEWAY"
+        - name: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+          value: "http://eureka-server:8761/eureka/"
+        - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+          value: "true"
+        - name: SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED
+          value: "true"
+        - name: SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_LOWER_CASE_SERVICE_ID
+          value: "true"
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m -Deureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/ -Dserver.port=8080"
+        resources:
+          limits:
+            memory: "768Mi"
+            cpu: "500m"
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          timeoutSeconds: 5
+---
+# Service para API Gateway
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: aplicacion-distribuida
+spec:
+  selector:
+    app: api-gateway
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+---
+# Ingress para exponer API Gateway con dominio oppadev.io
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-ingress
+  namespace: aplicacion-distribuida
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - oppadev.io
+    - www.oppadev.io
+    secretName: oppadev-tls
+  rules:
+  - host: oppadev.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 8080
+  - host: www.oppadev.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-gateway
+            port:
+              number: 8080

@@ -1,0 +1,136 @@
+# ConfigMap para RabbitMQ
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: aplicacion-distribuida
+data:
+  RABBITMQ_DEFAULT_USER: admin
+  RABBITMQ_DEFAULT_PASS: admin
+---
+# PersistentVolume para RabbitMQ
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rabbitmq-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /data/rabbitmq
+---
+# PersistentVolumeClaim para RabbitMQ
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc
+  namespace: aplicacion-distribuida
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: manual
+---
+# Deployment de RabbitMQ
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: aplicacion-distribuida
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management-alpine
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: RABBITMQ_DEFAULT_PASS
+        volumeMounts:
+        - name: rabbitmq-storage
+          mountPath: /var/lib/rabbitmq
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+        livenessProbe:
+          exec:
+            command:
+              - rabbitmq-diagnostics
+              - -q
+              - ping
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 15
+        readinessProbe:
+          exec:
+            command:
+              - rabbitmq-diagnostics
+              - -q
+              - check_running
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+      volumes:
+      - name: rabbitmq-storage
+        persistentVolumeClaim:
+          claimName: rabbitmq-pvc
+---
+# Service para RabbitMQ AMQP
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: aplicacion-distribuida
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - name: amqp
+    port: 5672
+    targetPort: 5672
+  type: ClusterIP
+---
+# Service para RabbitMQ Management (opcional para debugging)
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-management
+  namespace: aplicacion-distribuida
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - name: management
+    port: 15672
+    targetPort: 15672
+  type: NodePort

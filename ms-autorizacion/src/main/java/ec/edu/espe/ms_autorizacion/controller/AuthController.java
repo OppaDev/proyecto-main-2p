@@ -1,5 +1,6 @@
 package ec.edu.espe.ms_autorizacion.controller;
 
+
 import ec.edu.espe.ms_autorizacion.payload.*;
 import ec.edu.espe.ms_autorizacion.util.JwtUtils;
 import org.springframework.security.authentication.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthenticationManager authManager;

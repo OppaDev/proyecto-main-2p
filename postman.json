@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "c1f7b0e1-a23d-4b9e-9d8a-9c7f2a1b9a2c",
+		"name": "Proyecto Microservicios Publicaciones",
+		"description": "Colección para probar el sistema de microservicios de publicaciones, incluyendo autenticación y endpoints de negocio.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "0"
+	},
+	"item": [
+		{
+			"name": "Seguridad (ms-autorizacion)",
+			"item": [
+				{
+					"name": "Login como Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"admin_token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Obtiene un token JWT para el usuario administrador. El token se guarda automáticamente en la variable de colección `admin_token`."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/api/v1/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						},
+						"description": "Lista todos los roles disponibles en el sistema. Requiere token de ROLE_ADMIN o ROLE_USER."
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nuevo Rol",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ROLE_EDITOR\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						},
+						"description": "Crea un nuevo rol en el sistema. Requiere token de ROLE_ADMIN únicamente."
+					},
+					"response": []
+				},
+				{
+					"name": "Login como Usuario Normal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"user_token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"user\",\r\n    \"password\": \"user123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login con usuario normal (ROLE_USER). El token se guarda como user_token."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Roles como Usuario Normal",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{user_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/api/v1/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						},
+						"description": "Lista roles con token de ROLE_USER (debería funcionar según especificación)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Autores (ms-publicaciones)",
+			"item": [
+				{
+					"name": "Crear un nuevo Autor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.data && jsonData.data.id) {",
+									"    pm.collectionVariables.set(\"last_autor_id\", jsonData.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre\": \"Carl\",\r\n    \"apellido\": \"Sagan\",\r\n    \"email\": \"carl.sagan@cosmos.com\",\r\n    \"orcid\": \"0000-0001-2345-6789\",\r\n    \"nacionalidad\": \"Estadounidense\",\r\n    \"telefono\": \"+1-555-COSMOS\",\r\n    \"institucion\": \"Cornell University\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/autor",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"autor"
+							]
+						},
+						"description": "Crea un nuevo autor en el sistema. Requiere token de administrador."
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos los Autores",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/api/v1/autor",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"autor"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Libros (ms-publicaciones)",
+			"item": [
+				{
+					"name": "Crear un nuevo Libro",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"Cosmos\",\r\n    \"anioPublicacion\": 1980,\r\n    \"editorial\": \"Random House\",\r\n    \"isbn\": \"978-0345331359\",\r\n    \"resumen\": \"Un viaje personal a través del cosmos, explorando 15 mil millones de años de evolución cósmica que han transformado la materia en conciencia.\",\r\n    \"idioma\": \"Inglés\",\r\n    \"genero\": \"Divulgación Científica\",\r\n    \"numeroPaginas\": 384,\r\n    \"edicion\": \"Primera\",\r\n    \"idAutor\": {{last_autor_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/libro",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"libro"
+							]
+						},
+						"description": "Crea un nuevo libro, asociándolo a un autor existente. El `idAutor` se obtiene del autor creado anteriormente."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Artículos (ms-publicaciones)",
+			"item": [
+				{
+					"name": "Crear un nuevo Artículo Científico",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo\": \"A Pale Blue Dot: A Vision of the Human Future in Space\",\r\n    \"anioPublicacion\": 1994,\r\n    \"editorial\": \"Ballantine Books\",\r\n    \"isbn\": null,\r\n    \"resumen\": \"Una reflexión sobre el lugar de la humanidad en el universo, inspirada en la famosa fotografía del mismo nombre.\",\r\n    \"idioma\": \"Inglés\",\r\n    \"revista\": \"Nature\",\r\n    \"doi\": \"10.1234/nature.1994.5678\",\r\n    \"areaInvestigacion\": \"Astrofísica\",\r\n    \"fechaPublicacion\": \"1994-11-10\",\r\n    \"idAutor\": {{last_autor_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8001/api/v1/articulo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"articulo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Catálogo (ms-catalogo)",
+			"item": [
+				{
+					"name": "Listar todo el Catálogo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/api/v1/catalogo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"catalogo"
+							]
+						},
+						"description": "Consulta el catálogo completo. Las publicaciones creadas en `ms-publicaciones` deberían aparecer aquí después de un breve momento (procesamiento asíncrono vía RabbitMQ)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notificaciones (ms.notificaciones)",
+			"item": [
+				{
+					"name": "Listar todas las Notificaciones",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8001/api/v1/notificaciones",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"api",
+								"v1",
+								"notificaciones"
+							]
+						},
+						"description": "Consulta el historial de notificaciones. Deberías ver registros por cada autor, libro y artículo creado."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string",
+			"description": "Token JWT para el usuario administrador. Se obtiene al ejecutar la petición de Login."
+		},
+		{
+			"key": "last_autor_id",
+			"value": "1",
+			"type": "string",
+			"description": "ID del último autor creado. Se usa para asociar libros y artículos."
+		},
+		{
+			"key": "user_token",
+			"value": "",
+			"type": "string",
+			"description": "Token JWT para usuario normal (ROLE_USER). Se obtiene al ejecutar Login como Usuario Normal."
+		}
+	]
+}

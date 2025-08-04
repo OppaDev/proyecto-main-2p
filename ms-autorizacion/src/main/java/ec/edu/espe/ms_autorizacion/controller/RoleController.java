@@ -7,7 +7,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("roles")
+@RequestMapping("/roles")
 public class RoleController {
 
     private final RoleRepository roleRepo;

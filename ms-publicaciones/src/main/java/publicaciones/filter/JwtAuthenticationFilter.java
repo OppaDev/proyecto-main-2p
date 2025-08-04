@@ -1,7 +1,6 @@
-package ec.edu.espe.ms_autorizacion.filter;
+package publicaciones.filter;
 
-import ec.edu.espe.ms_autorizacion.util.JwtUtils;
-import ec.edu.espe.ms_autorizacion.repository.UserRepository;
+import publicaciones.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +18,9 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final UserRepository userRepo;
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserRepository userRepo) {
+    public JwtAuthenticationFilter(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.userRepo = userRepo;
     }
 
     @Override
@@ -38,25 +35,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Extraer el nombre de usuario del token JWT
                 String username = jwtUtils.getUserNameFromJwtToken(token);
                 
-                // Verificar que el usuario existe en la base de datos
-                var userOpt = userRepo.findByUsername(username);
-                if (userOpt.isPresent()) {
-                    // Extraer los roles del token JWT y convertir a authorities de Spring Security
-                    var roles = jwtUtils.getRolesFromJwtToken(token)
-                            .stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
-                    
-                    // Crear el objeto de autenticación con username y authorities
-                    var auth = new UsernamePasswordAuthenticationToken(username, null, roles);
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                    
-                    // Establecer la autenticación en el contexto de seguridad de Spring
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+                // Extraer los roles del token JWT y convertir a authorities de Spring Security
+                var roles = jwtUtils.getRolesFromJwtToken(token)
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+                
+                // Crear el objeto de autenticación con username y authorities
+                var auth = new UsernamePasswordAuthenticationToken(username, null, roles);
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                
+                // Establecer la autenticación en el contexto de seguridad de Spring
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
         chain.doFilter(req, res);
     }
 }
-

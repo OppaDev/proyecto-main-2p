@@ -29,6 +29,10 @@ spring:
 server:
   port: 0
 
+jwt:
+  secret: a-string-secret-at-least-256-bits-long
+  expirationMs: 3600000
+
 eureka:
   client:
     serviceUrl:
