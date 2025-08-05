@@ -79,15 +79,9 @@ metadata:
   namespace: aplicacion-distribuida
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - oppadev.io
-    - www.oppadev.io
-    secretName: oppadev-tls
   rules:
   - host: oppadev.io
     http:

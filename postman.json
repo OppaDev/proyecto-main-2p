@@ -37,12 +37,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/auth/login",
+							"raw": "http://oppadev.io/api/v1/auth/login",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -70,12 +69,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8001/api/v1/roles",
+							"raw": "http://oppadev.io/api/v1/roles",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -111,12 +109,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/roles",
+							"raw": "http://oppadev.io/api/v1/roles",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -154,12 +151,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/auth/login",
+							"raw": "http://oppadev.io/api/v1/auth/login",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -187,12 +183,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8001/api/v1/roles",
+							"raw": "http://oppadev.io/api/v1/roles",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -247,12 +242,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/autor",
+							"raw": "http://oppadev.io/api/v1/autor",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -279,12 +273,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8001/api/v1/autor",
+							"raw": "http://oppadev.io/api/v1/autor",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -324,12 +317,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/libro",
+							"raw": "http://oppadev.io/api/v1/libro",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -370,12 +362,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8001/api/v1/articulo",
+							"raw": "http://oppadev.io/api/v1/articulo",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -406,12 +397,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8001/api/v1/catalogo",
+							"raw": "http://oppadev.io/api/v1/catalogo",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
@@ -443,12 +433,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8001/api/v1/notificaciones",
+							"raw": "http://oppadev.io/api/v1/notificaciones",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"oppadev.io"
 							],
-							"port": "8001",
 							"path": [
 								"api",
 								"v1",
