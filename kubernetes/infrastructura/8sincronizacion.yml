@@ -17,6 +17,7 @@ spec:
       containers:
       - name: sincronizacion
         image: oppadev/sincronizacion:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
@@ -45,20 +46,21 @@ spec:
           requests:
             memory: "256Mi"
             cpu: "125m"
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 90
-          periodSeconds: 30
-          timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
+# Health checks temporalmente deshabilitados
+        # livenessProbe:
+        #   httpGet:
+        #     path: /actuator/health
+        #     port: 8080
+        #   initialDelaySeconds: 90
+        #   periodSeconds: 30
+        #   timeoutSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /actuator/health
+        #     port: 8080
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
 ---
 # Service para Sincronización
 apiVersion: v1

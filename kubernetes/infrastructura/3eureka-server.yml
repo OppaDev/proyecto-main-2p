@@ -17,6 +17,7 @@ spec:
       containers:
       - name: eureka-server
         image: oppadev/ms-eureka-server:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8761
         env:
@@ -65,4 +66,4 @@ spec:
   - name: http
     port: 8761
     targetPort: 8761
-  type: ClusterIP
+  type: NodePort

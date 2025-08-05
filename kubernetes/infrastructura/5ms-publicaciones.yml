@@ -17,6 +17,7 @@ spec:
       containers:
       - name: ms-publicaciones
         image: oppadev/ms-publicaciones:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
