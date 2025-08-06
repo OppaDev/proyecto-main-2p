@@ -115,26 +115,26 @@ spec:
           requests:
             memory: "512Mi"
             cpu: "250m"
-        livenessProbe:
-          exec:
-            command:
-              - pg_isready
-              - -U
-              - admin
-              - -d
-              - postgres
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-              - pg_isready
-              - -U
-              - admin
-              - -d
-              - postgres
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - pg_isready
+        #       - -U
+        #       - admin
+        #       - -d
+        #       - postgres
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - pg_isready
+        #       - -U
+        #       - admin
+        #       - -d
+        #       - postgres
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
       volumes:
       - name: postgres-storage
         persistentVolumeClaim:

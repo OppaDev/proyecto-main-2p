@@ -82,24 +82,24 @@ spec:
           requests:
             memory: "512Mi"
             cpu: "250m"
-        livenessProbe:
-          exec:
-            command:
-              - rabbitmq-diagnostics
-              - -q
-              - ping
-          initialDelaySeconds: 60
-          periodSeconds: 60
-          timeoutSeconds: 15
-        readinessProbe:
-          exec:
-            command:
-              - rabbitmq-diagnostics
-              - -q
-              - check_running
-          initialDelaySeconds: 20
-          periodSeconds: 60
-          timeoutSeconds: 10
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - rabbitmq-diagnostics
+        #       - -q
+        #       - ping
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 60
+        #   timeoutSeconds: 15
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - rabbitmq-diagnostics
+        #       - -q
+        #       - check_running
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 60
+        #   timeoutSeconds: 10
       volumes:
       - name: rabbitmq-storage
         persistentVolumeClaim:

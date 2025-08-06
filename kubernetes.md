@@ -54,7 +54,7 @@ cd "kubernetes/infrastructura"
 Desplegar en orden:
 ```bash
 # Infraestructura
-kubectl apply -f 1postgres.yml
+kubectl apply -f 1database.yml
 kubectl apply -f 2rabbitmq.yml
 kubectl apply -f 3eureka-server.yml
 
